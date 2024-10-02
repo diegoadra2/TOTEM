@@ -28,7 +28,6 @@
             position: absolute;
             width: 50%;
             height: 50%;
-            background-color: #f00; /* Color rojo por defecto */
             border-right: 5px solid white;
             transform-origin: 100% 100%;
             display: flex;
@@ -36,12 +35,21 @@
             align-items: center;
             color: white;
             font-weight: bold;
+            font-size: 1.5em;
         }
-        .sector:nth-child(2n) {
-            background-color: #0f0; /* Color verde para los sectores pares */
+        /* Colores de las franjas */
+        .sector:nth-child(odd) {
+            background-color: #f00; /* Color rojo para sectores impares */
+        }
+        .sector:nth-child(even) {
+            background-color: #000; /* Color negro para sectores pares */
+        }
+        .sector:first-child {
+            background-color: #0f0; /* Color verde para el sector 0 */
         }
         .sector span {
             transform: rotate(-90deg);
+            position: absolute;
         }
         .aguja {
             position: absolute;
@@ -87,34 +95,35 @@
 
     // Crear los sectores de la ruleta
     const sectors = 37; // Números del 0 al 36
+    const numbers = Array.from({ length: sectors }, (_, i) => i); // Generar números del 0 al 36
+    const shuffledNumbers = numbers.sort(() => Math.random() - 0.5); // Mezclar números aleatoriamente
+
     for (let i = 0; i < sectors; i++) {
         const sector = document.createElement('div');
         sector.className = 'sector';
         sector.style.transform = `rotate(${(360 / sectors) * i}deg)`;
-        
+        sector.style.clipPath = `polygon(0 100%, 100% 100%, 100% 0)`; // Asegurar que cada sector ocupa su espacio
+
         const number = document.createElement('span');
-        number.textContent = i;
+        number.textContent = shuffledNumbers[i]; // Mostrar el número aleatorio
         sector.appendChild(number);
 
         ruleta.appendChild(sector);
     }
 
     spinButton.addEventListener('click', () => {
-        const randomDeg = Math.floor(Math.random() * 360 + 720); // Genera entre 720 y 1080 grados
+        const randomDeg = Math.floor(Math.random() * 360) + 700; // Mínimo 700 grados
         const totalDeg = randomDeg + 360 * 2; // Garantiza al menos dos vueltas completas
-        const winningNumber = (Math.floor((totalDeg % 360) / (360 / sectors)));
-if(totalDeg<0){
-    totalDeg*-1;
-}
+        const winningNumber = Math.floor((totalDeg % 360) / (360 / sectors)); // Calcula el número ganador
 
-        ruleta.style.transform = `rotate(${totalDeg}deg)`;
+        ruleta.style.transform = `rotate(${totalDeg}deg)`; // Rota la ruleta
 
         const apuesta = parseInt(apuestaInput.value);
         setTimeout(() => {
-            if (apuesta === winningNumber) {
-                resultadoDiv.innerHTML = `¡Felicidades! Has ganado con el número ${winningNumber}.`;
+            if (apuesta === shuffledNumbers[winningNumber]) {
+                resultadoDiv.innerHTML = `¡Felicidades! Has ganado con el número ${winningNumber === 0 ? '0' : shuffledNumbers[winningNumber]}.`;
             } else {
-                resultadoDiv.innerHTML = `Lo siento, has perdido. El número ganador es ${winningNumber}.`;
+                resultadoDiv.innerHTML = `Lo siento, has perdido. El número ganador es ${winningNumber === 0 ? '0' : shuffledNumbers[winningNumber]}.`;
             }
         }, 4000); // Espera el tiempo de la animación
     });
