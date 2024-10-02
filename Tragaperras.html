@@ -14,6 +14,7 @@
         </div>
         <button id="spin" style="background-color: gold; color: black; padding: 10px 20px; font-size: 16px; cursor: pointer; border-radius: 5px;">Girar</button>
         <div id="win-line" style="position: absolute; top: 120px; left: 20px; right: 20px; height: 4px; background-color: transparent;"></div>
+        <div id="message" style="color: lime; font-size: 24px; margin-top: 20px;"></div> <!-- Mensaje de ganancia -->
     </div>
 
     <script>
@@ -25,6 +26,7 @@
         const reel3 = document.getElementById('reel3');
         const winLine = document.getElementById('win-line');
         const spinButton = document.getElementById('spin');
+        const message = document.getElementById('message'); // Elemento para el mensaje de ganancia
 
         // Crear 3 filas de símbolos en cada rodillo
         function createReelElement() {
@@ -49,6 +51,7 @@
                 symbol.style.alignItems = 'center';
                 symbol.style.justifyContent = 'center';
                 symbol.textContent = symbols[Math.floor(Math.random() * symbols.length)];
+                symbol.style.color = 'black'; // Color inicial negro
                 reelElement.appendChild(symbol);
             }
         }
@@ -81,18 +84,77 @@
             });
         }
 
-        // Comprobar si hay ganancia en la fila del medio
+        // Comprobar si hay una combinación ganadora
         function checkWin() {
-            const middleRowSymbols = [
-                reels[0].children[1].textContent,
-                reels[1].children[1].textContent,
-                reels[2].children[1].textContent
+            // Obtener los símbolos de las 3 filas y 2 diagonales
+            const topRow = [
+                reels[0].children[0],
+                reels[1].children[0],
+                reels[2].children[0]
             ];
-            return middleRowSymbols[0] === middleRowSymbols[1] && middleRowSymbols[1] === middleRowSymbols[2];
+            const middleRow = [
+                reels[0].children[1],
+                reels[1].children[1],
+                reels[2].children[1]
+            ];
+            const bottomRow = [
+                reels[0].children[2],
+                reels[1].children[2],
+                reels[2].children[2]
+            ];
+            const diagonal1 = [ // Diagonal de arriba izquierda a abajo derecha
+                reels[0].children[0],
+                reels[1].children[1],
+                reels[2].children[2]
+            ];
+            const diagonal2 = [ // Diagonal de arriba derecha a abajo izquierda
+                reels[0].children[2],
+                reels[1].children[1],
+                reels[2].children[0]
+            ];
+
+            // Función para resaltar símbolos ganadores
+            function highlightWin(row) {
+                row.forEach(symbol => {
+                    symbol.style.color = 'lime'; // Cambiar color a verde
+                });
+            }
+
+            // Verificar todas las combinaciones posibles
+            if (topRow[0].textContent === topRow[1].textContent && topRow[1].textContent === topRow[2].textContent) {
+                highlightWin(topRow);
+                return true;
+            }
+            if (middleRow[0].textContent === middleRow[1].textContent && middleRow[1].textContent === middleRow[2].textContent) {
+                highlightWin(middleRow);
+                return true;
+            }
+            if (bottomRow[0].textContent === bottomRow[1].textContent && bottomRow[1].textContent === bottomRow[2].textContent) {
+                highlightWin(bottomRow);
+                return true;
+            }
+            if (diagonal1[0].textContent === diagonal1[1].textContent && diagonal1[1].textContent === diagonal1[2].textContent) {
+                highlightWin(diagonal1);
+                return true;
+            }
+            if (diagonal2[0].textContent === diagonal2[1].textContent && diagonal2[1].textContent === diagonal2[2].textContent) {
+                highlightWin(diagonal2);
+                return true;
+            }
+
+            return false;
         }
 
         spinButton.addEventListener('click', async function() {
             winLine.style.backgroundColor = 'transparent'; // Ocultar la línea antes de girar
+            message.textContent = ''; // Limpiar mensaje anterior
+
+            // Reiniciar colores de los símbolos
+            reels.forEach(reel => {
+                Array.from(reel.children).forEach(symbol => {
+                    symbol.style.color = 'black'; // Color negro
+                });
+            });
 
             // Girar rodillos secuencialmente
             await spinReel(reels[0]);
@@ -101,7 +163,7 @@
 
             // Revisar si se ha ganado
             if (checkWin()) {
-                winLine.style.backgroundColor = 'red'; // Mostrar línea roja si se gana
+                message.textContent = '¡Ganaste!'; // Mostrar mensaje de ganancia
             }
         });
     </script>
