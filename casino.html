@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="styles.css">
+    <title>Casino Interfaz</title>
+    <style>
+        * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: #1e1e1e;
+    
+}
+
+header {
+    background-color: #000000;
+    padding: 20px;
+    text-align: center;
+    color: #ffffff;
+}
+
+
+nav {
+    background-color: #ffd900;
+    padding: 10px;
+
+}
+
+nav ul {
+    list-style-type: none;
+}
+
+nav ul li {
+    display: inline;
+    margin-right: 15px;
+}
+
+nav a {
+    color: #000000;
+    text-decoration: none;
+}
+
+main {
+    padding: 20px;
+}
+
+.juego {
+    background-color: #ccbb70;
+    margin: 15px 0;
+    padding: 40px;
+    border-radius: 10px;
+    border-color: #000000;
+}
+
+.juego h2 {
+    margin-bottom: 10px;
+}
+
+.juego button {
+    background-color: #000000;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.juego button:hover {
+    background-color: #fff1a1;
+}
+
+footer {
+    text-align: center;
+    padding: 20px;
+    background-color: #000000;
+}
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Casino La Cueva records</h1>
+    </header>
+    <nav>
+        <ul>
+            <li><a href="#ruleta">Ruleta</a></li>
+            <li><a href="#blackjack">Blackjack</a></li>
+            <li><a href="#tragamonedas">Máquinas Traganíqueles</a></li>
+        </ul>
+    </nav>
+    <main>
+        
+        <section  id="ruleta" class="juego">
+            <h2>Ruleta</h2>
+            <p>Juega a la clásica ruleta y apuesta por tu número favorito.</p>
+        <br>
+           <a class="btn" href="https://templodeslots.es/juegos-gratis/ruleta"></a>
+            <button class="btn" type="submit">Jugar</button>
+        </section>
+        <br>
+        <section id="blackjack" class="juego">
+            <h2>Blackjack</h2>
+            <p>Intenta alcanzar 21 y vencer al dealer en este emocionante juego.</p>
+            <br>
+            <button>Jugar</button>
+        </section>
+        <br>
+        <section id="tragamonedas" class="juego">
+            <h2>Máquinas Traganíqueles</h2>
+            <p>Gira los carretes y prueba tu suerte en nuestras máquinas traganíqueles.</p>
+            <br>
+            <button>Jugar</button>
+        </section>
+    </main>
+    <footer>
+        <p>&copy; 2024 Casino La cueva records Todos los derechos reservados.</p>
+    </footer>
+</body>
+</html>
