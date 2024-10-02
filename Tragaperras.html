@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Máquina Tragaperras Realista 3x3</title>
+</head>
+<body style="font-family: Arial, sans-serif; background-color: #222; color: white; text-align: center; padding-top: 50px;">
+    <div class="slot-machine" style="display: inline-block; border: 5px solid gold; padding: 20px; background-color: black; border-radius: 15px; position: relative;">
+        <div class="reel-container" style="display: flex; justify-content: center; margin-bottom: 20px;">
+            <div class="reel" id="reel1" style="margin: 0 10px;"></div>
+            <div class="reel" id="reel2" style="margin: 0 10px;"></div>
+            <div class="reel" id="reel3" style="margin: 0 10px;"></div>
+        </div>
+        <button id="spin" style="background-color: gold; color: black; padding: 10px 20px; font-size: 16px; cursor: pointer; border-radius: 5px;">Girar</button>
+        <div id="win-line" style="position: absolute; top: 120px; left: 20px; right: 20px; height: 4px; background-color: transparent;"></div>
+    </div>
+
+    <script>
+        // Simbolos disponibles
+        const symbols = ['🍒', '🍋', '🍇', '🔔', '🍉', '⭐', '7️⃣'];
+
+        const reel1 = document.getElementById('reel1');
+        const reel2 = document.getElementById('reel2');
+        const reel3 = document.getElementById('reel3');
+        const winLine = document.getElementById('win-line');
+        const spinButton = document.getElementById('spin');
+
+        // Crear 3 filas de símbolos en cada rodillo
+        function createReelElement() {
+            const reelElement = document.createElement('div');
+            reelElement.style.display = 'flex';
+            reelElement.style.flexDirection = 'column';
+            reelElement.style.alignItems = 'center';
+            reelElement.style.border = '2px solid #ccc';
+            reelElement.style.width = '100px';
+            reelElement.style.height = '300px';
+            reelElement.style.backgroundColor = 'white';
+            reelElement.style.borderRadius = '10px';
+            return reelElement;
+        }
+
+        function populateReel(reelElement) {
+            for (let i = 0; i < 3; i++) {
+                const symbol = document.createElement('div');
+                symbol.style.fontSize = '40px';
+                symbol.style.height = '100px';
+                symbol.style.display = 'flex';
+                symbol.style.alignItems = 'center';
+                symbol.style.justifyContent = 'center';
+                symbol.textContent = symbols[Math.floor(Math.random() * symbols.length)];
+                reelElement.appendChild(symbol);
+            }
+        }
+
+        function resetReel(reelElement) {
+            while (reelElement.firstChild) {
+                reelElement.removeChild(reelElement.firstChild);
+            }
+        }
+
+        // Crear los elementos de los rodillos
+        const reels = [createReelElement(), createReelElement(), createReelElement()];
+        reel1.appendChild(reels[0]);
+        reel2.appendChild(reels[1]);
+        reel3.appendChild(reels[2]);
+
+        function spinReel(reelElement) {
+            return new Promise(resolve => {
+                const symbols = Array.from(reelElement.children);
+                let step = 0;
+                const spinInterval = setInterval(() => {
+                    step++;
+                    resetReel(reelElement);
+                    populateReel(reelElement);
+                    if (step > 10) { // Cantidad de vueltas para simular el giro
+                        clearInterval(spinInterval);
+                        resolve();
+                    }
+                }, 100); // Velocidad del giro
+            });
+        }
+
+        // Comprobar si hay ganancia en la fila del medio
+        function checkWin() {
+            const middleRowSymbols = [
+                reels[0].children[1].textContent,
+                reels[1].children[1].textContent,
+                reels[2].children[1].textContent
+            ];
+            return middleRowSymbols[0] === middleRowSymbols[1] && middleRowSymbols[1] === middleRowSymbols[2];
+        }
+
+        spinButton.addEventListener('click', async function() {
+            winLine.style.backgroundColor = 'transparent'; // Ocultar la línea antes de girar
+
+            // Girar rodillos secuencialmente
+            await spinReel(reels[0]);
+            await spinReel(reels[1]);
+            await spinReel(reels[2]);
+
+            // Revisar si se ha ganado
+            if (checkWin()) {
+                winLine.style.backgroundColor = 'red'; // Mostrar línea roja si se gana
+            }
+        });
+    </script>
+</body>
+</html>
