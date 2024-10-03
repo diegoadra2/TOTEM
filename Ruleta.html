@@ -21,8 +21,8 @@
             border: 10px solid #333;
             position: relative;
             overflow: hidden;
-            transform: rotate(0deg);
-            transition: transform 4s cubic-bezier(0.33, 1, 0.68, 1);
+            transform: rotate(-20deg);
+            transition: transform 3s cubic-bezier(0.16, 1, 0.34, 1);
         }
         .sector {
             position: absolute;
@@ -35,7 +35,7 @@
             align-items: center;
             color: white;
             font-weight: bold;
-            font-size: 1.5em;
+            font-size: 1.2em;
         }
         /* Colores de las franjas */
         .sector:nth-child(odd) {
@@ -48,7 +48,7 @@
             background-color: #0f0; /* Color verde para el sector 0 */
         }
         .sector span {
-            transform: rotate(-90deg);
+            transform: rotate(-10deg);
             position: absolute;
         }
         .aguja {
