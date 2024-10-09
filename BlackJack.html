@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blackjack</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #2e2e2e;
+            color: white;
+        }
+        #game {
+            margin: 20px auto;
+            width: 300px;
+            padding: 20px;
+            border: 1px solid #fff;
+            border-radius: 10px;
+            background-color: #444;
+        }
+        .card {
+            display: inline-block;
+            margin: 5px;
+            padding: 10px;
+            border: 1px solid #fff;
+            border-radius: 5px;
+            background-color: #555;
+        }
+        button {
+            margin: 10px;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            background-color: #007bff;
+            color: white;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <div id="game">
+        <h1>Blackjack</h1>
+        <div id="dealer">
+            <h2>Dealer</h2>
+            <div id="dealer-cards"></div>
+        </div>
+        <div id="player">
+            <h2>Player</h2>
+            <div id="player-cards"></div>
+        </div>
+        <button id="hit">Hit</button>
+        <button id="stand">Stand</button>
+        <button id="reset">Reset</button>
+        <p id="message"></p>
+    </div>
+
+    <script>
+        const dealerCards = document.getElementById('dealer-cards');
+        const playerCards = document.getElementById('player-cards');
+        const message = document.getElementById('message');
+        const hitButton = document.getElementById('hit');
+        const standButton = document.getElementById('stand');
+        const resetButton = document.getElementById('reset');
+
+        let dealerHand = [];
+        let playerHand = [];
+
+        function getRandomCard() {
+            const cards = ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K', 'A'];
+            return cards[Math.floor(Math.random() * cards.length)];
+        }
+
+        function startGame() {
+            dealerHand = [getRandomCard(), getRandomCard()];
+            playerHand = [getRandomCard(), getRandomCard()];
+            renderHands();
+            message.textContent = '';
+        }
+
+        function renderHands() {
+            dealerCards.innerHTML = dealerHand.map(card => `<div class="card">${card}</div>`).join('');
+            playerCards.innerHTML = playerHand.map(card => `<div class="card">${card}</div>`).join('');
+        }
+
+        function hit() {
+            playerHand.push(getRandomCard());
+            renderHands();
+            checkGameStatus();
+        }
+
+        function stand() {
+            while (calculateHandValue(dealerHand) < 17) {
+                dealerHand.push(getRandomCard());
+            }
+            renderHands();
+            checkGameStatus(true);
+        }
+
+        function calculateHandValue(hand) {
+            let value = 0;
+            let aceCount = 0;
+            hand.forEach(card => {
+                if (card === 'J' || card === 'Q' || card === 'K') {
+                    value += 10;
+                } else if (card === 'A') {
+                    aceCount += 1;
+                    value += 11;
+                } else {
+                    value += parseInt(card);
+                }
+            });
+            while (value > 21 && aceCount > 0) {
+                value -= 10;
+                aceCount -= 1;
+            }
+            return value;
+        }
+
+        function checkGameStatus(stand = false) {
+            const playerValue = calculateHandValue(playerHand);
+            const dealerValue = calculateHandValue(dealerHand);
+
+            if (playerValue > 21) {
+                message.textContent = 'Player busts! Dealer wins!';
+            } else if (dealerValue > 21) {
+                message.textContent = 'Dealer busts! Player wins!';
+            } else if (stand) {
+                if (playerValue > dealerValue) {
+                    message.textContent = 'Player wins!';
+                } else if (playerValue < dealerValue) {
+                    message.textContent = 'Dealer wins!';
+                } else {
+                    message.textContent = 'It\'s a tie!';
+                }
+            }
+        }
+
+        hitButton.addEventListener('click', hit);
+        standButton.addEventListener('click', stand);
+        resetButton.addEventListener('click', startGame);
+
+        startGame();
+    </script>
+</body>
+</html>
